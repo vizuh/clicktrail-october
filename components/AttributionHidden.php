@@ -8,6 +8,7 @@ use Cms\Classes\ComponentBase;
 use ClickTrail\Conventions\Stable;
 use ClickTrail\Core\StoredState;
 use Vizuh\ClickTrail\Classes\AttributionManager;
+use Vizuh\ClickTrail\Classes\Consent\ConsentGate;
 use Vizuh\ClickTrail\Models\Settings;
 
 /**
@@ -75,7 +76,10 @@ class AttributionHidden extends ComponentBase
         // Landing page, initial referrer, consent state.
         $fields['ct_landing_page'] = (string) $first?->landingPage;
         $fields['ct_initial_referrer'] = (string) $first?->referrer;
-        $fields['ct_consent_state'] = (string) session()->get('vizuh.clicktrail.consent', 'unknown');
+        $snapshot = ConsentGate::storedSnapshot();
+        $fields['ct_consent_state'] = $snapshot === null
+            ? 'unknown'
+            : $snapshot->analyticsStorage->value;
 
         return $fields;
     }

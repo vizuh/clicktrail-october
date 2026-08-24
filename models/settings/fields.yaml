@@ -1,5 +1,5 @@
 # ClickTrail plugin settings.
-# Site ID + API endpoint identify the tenant; privacy toggles gate behavior.
+# Site ID + API endpoint identify the tenant; the consent section gates behavior.
 tabs:
     fields:
         site_id:
@@ -14,12 +14,47 @@ tabs:
             commentAbove: vizuh.clicktrail::lang.settings.api_endpoint_comment
             tab: vizuh.clicktrail::lang.settings.tab_general
 
-        consent_required:
+        consent_section:
+            type: section
+            label: vizuh.clicktrail::lang.settings.consent_section
+            comment: vizuh.clicktrail::lang.settings.consent_section_comment
+            tab: vizuh.clicktrail::lang.settings.tab_privacy
+
+        consent_resolver_class:
+            span: auto
+            label: vizuh.clicktrail::lang.settings.consent_resolver_class
+            commentAbove: vizuh.clicktrail::lang.settings.consent_resolver_class_comment
+            commentHtml: true
+            tab: vizuh.clicktrail::lang.settings.tab_privacy
+
+        require_analytics_storage:
+            type: switch
+            span: auto
+            default: true
+            label: vizuh.clicktrail::lang.settings.require_analytics_storage
+            comment: vizuh.clicktrail::lang.settings.require_analytics_storage_comment
+            tab: vizuh.clicktrail::lang.settings.tab_privacy
+
+        require_advertising_storage:
+            type: switch
+            span: auto
+            default: true
+            label: vizuh.clicktrail::lang.settings.require_advertising_storage
+            comment: vizuh.clicktrail::lang.settings.require_advertising_storage_comment
+            tab: vizuh.clicktrail::lang.settings.tab_privacy
+
+        forward_hashed_lead_data:
             type: switch
             span: auto
             default: false
-            label: vizuh.clicktrail::lang.settings.consent_required
-            comment: vizuh.clicktrail::lang.settings.consent_required_comment
+            label: vizuh.clicktrail::lang.settings.forward_hashed_lead_data
+            comment: vizuh.clicktrail::lang.settings.forward_hashed_lead_data_comment
+            tab: vizuh.clicktrail::lang.settings.tab_privacy
+
+        unknown_consent_section:
+            type: section
+            label: vizuh.clicktrail::lang.settings.unknown_consent_section
+            comment: vizuh.clicktrail::lang.settings.unknown_consent_section_comment
             tab: vizuh.clicktrail::lang.settings.tab_privacy
 
         first_party_proxy:

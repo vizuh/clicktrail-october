@@ -1,1 +1,3 @@
+1.0.2: "Consent contract alignment: normalized consent section (resolver hook, analytics/advertising/ad_user_data gates), snapshot persisted and attached to payloads, unknown-consent suppression with diagnostics."
+
 1.0.1: "Initial version: attribution components (tracker + hidden fields), backend settings, page/AJAX touch observation wired to the clicktrail/php-sdk core."

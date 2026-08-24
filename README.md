@@ -21,8 +21,8 @@ Built on the shared deterministic core [`clicktrail/php-sdk`](https://github.com
   GTM attribution-variable field list (visitor/session/event IDs, utm_*,
   ad click IDs, landing page, initial referrer, consent state).
 - Page-display and October AJAX observation wired to the shared core.
-- Backend settings: Site ID, API endpoint, consent-required toggle,
-  first-party proxy toggle.
+- Backend settings: Site ID, API endpoint, consent integration
+  (capability gates + resolver hook), first-party proxy toggle.
 - Scheduled queue-flush hook ready for the delivery lane.
 
 ## Requirements
@@ -70,8 +70,22 @@ gate passes).
 
 ## Consent
 
-Adapters obey host consent state; this plugin never acts as a CMP. When
-*Require consent* is enabled, tracking waits for a permitted consent state.
+ClickTrail does not replace your consent platform - it obeys it. The full
+normalized consent contract (capabilities, snapshot shape, behavior matrix)
+lives in [`docs/consent-compatibility-plan.md`](../../docs/consent-compatibility-plan.md).
+
+- Provider: auto-detect through a custom resolver class. WordPress ClickTrail
+  builds read WP Consent API directly; on October, implement
+  `Vizuh\ClickTrail\Classes\Consent\ConsentResolverInterface` (returns the
+  current `ClickTrail\Consent\ConsentSnapshot`) and register it under
+  Settings -> Privacy -> Consent resolver class. Real CMP adapters are deferred.
+- Attribution persistence requires `analytics_storage`; ad click-ID storage
+  requires `advertising_storage`; hashed-lead forwarding additionally needs an
+  explicit granted `ad_user_data` signal (disabled by default).
+- On unknown consent: **do not store or send**. Suppressed actions are recorded
+  with `suppressionReason()` into diagnostics.
+- The resolved consent snapshot is persisted alongside the attribution state and
+  travels with every submission (`consent` key on each payload).
 
 ## License
 

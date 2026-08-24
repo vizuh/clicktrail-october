@@ -1,0 +1,27 @@
+{
+    "name": "vizuh/october-clicktrail",
+    "type": "october-plugin",
+    "description": "See which campaign, keyword, click ID and landing page created each form submission. First-touch/last-touch attribution for October CMS.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vizuh OÜ",
+            "email": "hugo@vizuh.com",
+            "homepage": "https://vizuh.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "composer/installers": "^2.0",
+        "clicktrail/php-sdk": "^0.1@dev || dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vizuh\\ClickTrail\\": ""
+        }
+    },
+    "support": {
+        "issues": "https://github.com/vizuh/october-clicktrail/issues",
+        "source": "https://github.com/vizuh/october-clicktrail"
+    }
+}

@@ -1,0 +1,4 @@
+{# Hidden attribution fields - one input per collected attribute. #}
+{% for name, value in __SELF__.fields %}
+<input type="hidden" name="{{ name }}" value="{{ value }}">
+{% endfor %}

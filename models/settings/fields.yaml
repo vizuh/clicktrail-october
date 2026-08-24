@@ -1,0 +1,31 @@
+# ClickTrail plugin settings.
+# Site ID + API endpoint identify the tenant; privacy toggles gate behavior.
+tabs:
+    fields:
+        site_id:
+            span: auto
+            label: vizuh.clicktrail::lang.settings.site_id
+            commentAbove: vizuh.clicktrail::lang.settings.site_id_comment
+            tab: vizuh.clicktrail::lang.settings.tab_general
+
+        api_endpoint:
+            span: auto
+            label: vizuh.clicktrail::lang.settings.api_endpoint
+            commentAbove: vizuh.clicktrail::lang.settings.api_endpoint_comment
+            tab: vizuh.clicktrail::lang.settings.tab_general
+
+        consent_required:
+            type: switch
+            span: auto
+            default: false
+            label: vizuh.clicktrail::lang.settings.consent_required
+            comment: vizuh.clicktrail::lang.settings.consent_required_comment
+            tab: vizuh.clicktrail::lang.settings.tab_privacy
+
+        first_party_proxy:
+            type: switch
+            span: auto
+            default: false
+            label: vizuh.clicktrail::lang.settings.first_party_proxy
+            comment: vizuh.clicktrail::lang.settings.first_party_proxy_comment
+            tab: vizuh.clicktrail::lang.settings.tab_privacy

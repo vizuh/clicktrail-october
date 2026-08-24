@@ -1,0 +1,4 @@
+{# First-party ClickTrail loader only. Never inject third-party scripts here. #}
+{% if __SELF__.siteId and __SELF__.loaderUrl %}
+<script src="{{ __SELF__.loaderUrl }}" data-clicktrail-site-id="{{ __SELF__.siteId }}" async defer></script>
+{% endif %}

@@ -49,6 +49,6 @@ jobs:
       - name: Install dependencies (strict)
         run: composer install --no-plugins --prefer-dist --no-interaction --no-progress
       - name: Package validation
-        run: composer validate --no-check-publish --strict
+        run: composer --no-plugins validate --no-check-publish --strict
       - name: Test-suite status
         run: echo "::warning::No executable test suite is configured yet; platform integration testing remains a release blocker."

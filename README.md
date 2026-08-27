@@ -4,7 +4,8 @@ English | [Português](README.pt-BR.md) | [Deutsch](README.de.md) | [中文](REA
 
 **vizuh/october-clicktrail**
 
-See which campaign, keyword, click ID and landing page created each form submission in October CMS.
+Carry observed acquisition context into configured October CMS form
+submissions.
 
 </div>
 
@@ -28,7 +29,10 @@ See which campaign, keyword, click ID and landing page created each form submiss
 
 ## Why
 
-Not another analytics dashboard. ClickTrail stamps every October form submission with the marketing touch that produced it — deterministic first-touch / last-touch attribution computed by the shared [`clicktrail/php-sdk`](https://github.com/vizuh/clicktrail-php) core, validated against the same golden fixtures as every other ClickTrail integration.
+ClickTrail attaches stored first-touch and last-touch context to configured
+October form submissions. It does not determine which marketing touch caused a
+submission. The shared [`clicktrail/php-sdk`](https://github.com/vizuh/clicktrail-php)
+core computes the payload using merge rules validated by golden fixtures.
 
 Requires October CMS 3 (Laravel 10 base), PHP 8.1+ and `clicktrail/php-sdk` (^0.1@dev).
 
@@ -50,7 +54,7 @@ Then enable **ClickTrail** under Settings and enter your Site ID.
 Add the tracker to your layout head and the hidden fields to any October form:
 
 ```twig
-{# layouts/default.htm — inside <head> #}
+{# layouts/default.htm; inside <head> #}
 {% component 'clickTrailTracker' %}
 
 {# any October form #}
@@ -71,19 +75,20 @@ ct_initial_referrer=https://www.google.com/
 ct_consent_state=granted
 ```
 
-Every subsequent direct visit changes nothing — first touch stays, stored last touch persists. That merge law lives in the shared SDK, tested, not promised.
+Every subsequent direct visit changes nothing; first touch stays, stored last touch persists. That merge law lives in the shared SDK, tested, not promised.
 
 ## Components
 
-### `clickTrailTracker` — first-party loader
+### `clickTrailTracker`; first-party loader
 
 ```twig
 {% component 'clickTrailTracker' %}
 ```
 
-Renders exactly one script tag — the ClickTrail loader served from your own configured endpoint, tagged with your Site ID. No third-party scripts, ever.
+Renders one script tag for the configured ClickTrail loader and Site ID. The
+host owns the endpoint choice; this component does not inject additional tags.
 
-### `attributionHidden` — attribution fields on any form
+### `attributionHidden`; attribution fields on any form
 
 ```twig
 {% component 'attributionHidden' %}
@@ -111,7 +116,7 @@ All options live under Settings → ClickTrail:
 
 ## Consent
 
-ClickTrail does not replace your consent platform — it obeys it. The normalized consent contract (capabilities, snapshot shape, behavior matrix) lives in [`docs/consent-compatibility-plan.md`](../../docs/consent-compatibility-plan.md).
+ClickTrail does not replace your consent platform; it obeys it. The normalized consent contract (capabilities, snapshot shape, behavior matrix) lives in [`docs/consent-compatibility-plan.md`](../../docs/consent-compatibility-plan.md).
 
 - Provider: implement `Vizuh\ClickTrail\Classes\Consent\ConsentResolverInterface` (returns the current `ClickTrail\Consent\ConsentSnapshot`) and register it under Settings → Privacy → Consent resolver class. Real CMP adapters are deferred; the WordPress plugin reads WP Consent API directly.
 - On unknown consent: **do not store or send**. Suppressed actions are recorded with `suppressionReason()` into diagnostics.
@@ -135,4 +140,4 @@ GitHub Actions CI lints all PHP files on every push ([workflow](https://github.c
 
 ## License
 
-MIT — Copyright (c) 2026 Vizuh OÜ. See [LICENSE](LICENSE).
+MIT; Copyright (c) 2026 Vizuh OÜ. See [LICENSE](LICENSE).

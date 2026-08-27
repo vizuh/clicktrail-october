@@ -4,7 +4,8 @@ English | [Português](README.pt-BR.md) | [Deutsch](README.de.md) | [中文](REA
 
 **vizuh/october-clicktrail**
 
-Sehen Sie, welche Kampagne, welches Keyword, welche Click-ID und welche Landingpage jede Formular-Übermittlung in October CMS erzeugt hat.
+Übertragen Sie beobachteten Akquisitionskontext in konfigurierte
+October-CMS-Formularübermittlungen.
 
 </div>
 
@@ -28,7 +29,11 @@ Sehen Sie, welche Kampagne, welches Keyword, welche Click-ID und welche Landingp
 
 ## Warum
 
-Wieder kein Analytics-Dashboard. ClickTrail stempelt jede October-Formular-Übermittlung mit dem Marketing-Touch, der sie erzeugt hat — deterministische First-touch-/Last-touch-Attribution, berechnet vom gemeinsamen Kern [`clicktrail/php-sdk`](https://github.com/vizuh/clicktrail-php) und gegen dieselben Golden Fixtures validiert wie jede andere ClickTrail-Integration.
+ClickTrail hängt gespeicherten First-Touch- und Last-Touch-Kontext an
+konfigurierte October-Formularübermittlungen. Es bestimmt nicht, welcher
+Marketing-Touch eine Übermittlung verursacht hat. Der gemeinsame Kern
+[`clicktrail/php-sdk`](https://github.com/vizuh/clicktrail-php) berechnet das
+Payload mit Merge-Regeln, die durch Golden Fixtures validiert sind.
 
 Benötigt October CMS 3 (Laravel-10-Basis), PHP 8.1+ und `clicktrail/php-sdk` (^0.1@dev).
 
@@ -50,7 +55,7 @@ Aktivieren Sie dann **ClickTrail** unter Einstellungen und tragen Sie Ihre Site 
 Fügen Sie den Tracker in den `<head>` Ihres Layouts und die Hidden Fields in jedes October-Formular ein:
 
 ```twig
-{# layouts/default.htm — innerhalb von <head> #}
+{# layouts/default.htm; innerhalb von <head> #}
 {% component 'clickTrailTracker' %}
 
 {# beliebiges October-Formular #}
@@ -71,19 +76,20 @@ ct_initial_referrer=https://www.google.com/
 ct_consent_state=granted
 ```
 
-Jeder spätere Direktbesuch ändert nichts — der First Touch bleibt, der gespeicherte Last Touch besteht fort. Dieses Merge-Gesetz steckt im gemeinsamen SDK — getestet, nicht versprochen.
+Jeder spätere Direktbesuch ändert nichts; der First Touch bleibt, der gespeicherte Last Touch besteht fort. Dieses Merge-Gesetz steckt im gemeinsamen SDK; getestet, nicht versprochen.
 
 ## Komponenten
 
-### `clickTrailTracker` — First-Party-Loader
+### `clickTrailTracker`; First-Party-Loader
 
 ```twig
 {% component 'clickTrailTracker' %}
 ```
 
-Rendert genau ein Script-Tag — den ClickTrail-Loader von Ihrem konfigurierten Endpoint, markiert mit Ihrer Site ID. Keine Drittanbieter-Skripte, niemals.
+Rendert ein Script-Tag für den konfigurierten ClickTrail-Loader und die Site ID.
+Der Host bestimmt den Endpoint; diese Komponente injiziert keine weiteren Tags.
 
-### `attributionHidden` — Attributionsfelder in jedem Formular
+### `attributionHidden`; Attributionsfelder in jedem Formular
 
 ```twig
 {% component 'attributionHidden' %}
@@ -111,7 +117,7 @@ Alle Optionen finden Sie unter Einstellungen → ClickTrail:
 
 ## Consent
 
-ClickTrail ersetzt Ihre Consent-Plattform nicht — es gehorcht ihr. Der normalisierte Consent-Vertrag (Capabilities, Snapshot-Form, Verhaltensmatrix) liegt in [`docs/consent-compatibility-plan.md`](../../docs/consent-compatibility-plan.md).
+ClickTrail ersetzt Ihre Consent-Plattform nicht; es gehorcht ihr. Der normalisierte Consent-Vertrag (Capabilities, Snapshot-Form, Verhaltensmatrix) liegt in [`docs/consent-compatibility-plan.md`](../../docs/consent-compatibility-plan.md).
 
 - Anbieter: Implementieren Sie `Vizuh\ClickTrail\Classes\Consent\ConsentResolverInterface` (liefert den aktuellen `ClickTrail\Consent\ConsentSnapshot`) und registrieren Sie ihn unter Einstellungen → Datenschutz → Consent resolver class. Echte CMP-Adapter sind zurückgestellt; das WordPress-Plugin liest direkt die WP Consent API.
 - Bei unbekanntem Consent: **nichts speichern oder senden**. Unterdrückte Aktionen werden mit `suppressionReason()` in der Diagnostik protokolliert.
@@ -135,4 +141,4 @@ CI in GitHub Actions lintet bei jedem Push alle PHP-Dateien ([Workflow](https://
 
 ## Lizenz
 
-MIT — Copyright (c) 2026 Vizuh OÜ. Siehe [LICENSE](LICENSE).
+MIT; Copyright (c) 2026 Vizuh OÜ. Siehe [LICENSE](LICENSE).

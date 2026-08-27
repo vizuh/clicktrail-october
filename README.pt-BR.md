@@ -4,7 +4,8 @@ English | [Português](README.pt-BR.md) | [Deutsch](README.de.md) | [中文](REA
 
 **vizuh/october-clicktrail**
 
-Veja qual campanha, palavra-chave, click ID e página de destino gerou cada envio de formulário no October CMS.
+Leve o contexto de aquisição observado aos envios de formulários configurados
+no October CMS.
 
 </div>
 
@@ -28,7 +29,11 @@ Veja qual campanha, palavra-chave, click ID e página de destino gerou cada envi
 
 ## Por quê
 
-Não é mais um painel de analytics. O ClickTrail carimba cada envio de formulário do October com o toque de marketing que o produziu — atribuição determinística de primeiro/último toque calculada pelo núcleo compartilhado [`clicktrail/php-sdk`](https://github.com/vizuh/clicktrail-php), validada contra os mesmos golden fixtures de todas as outras integrações ClickTrail.
+O ClickTrail anexa o contexto armazenado de primeiro e último toque aos envios
+de formulários configurados no October. Ele não determina qual toque de
+marketing causou um envio. O núcleo compartilhado
+[`clicktrail/php-sdk`](https://github.com/vizuh/clicktrail-php) calcula o payload
+com regras de merge validadas por golden fixtures.
 
 Requer October CMS 3 (base Laravel 10), PHP 8.1+ e `clicktrail/php-sdk` (^0.1@dev).
 
@@ -50,7 +55,7 @@ Depois ative **ClickTrail** em Configurações e informe seu Site ID.
 Adicione o tracker ao `<head>` do layout e os campos ocultos a qualquer formulário October:
 
 ```twig
-{# layouts/default.htm — dentro do <head> #}
+{# layouts/default.htm; dentro do <head> #}
 {% component 'clickTrailTracker' %}
 
 {# qualquer formulário October #}
@@ -71,19 +76,21 @@ ct_initial_referrer=https://www.google.com/
 ct_consent_state=granted
 ```
 
-Qualquer visita direta seguinte não muda nada — o primeiro toque permanece, o último toque armazenado persiste. Essa lei de mesclagem vive no SDK compartilhado, testada, não prometida.
+Qualquer visita direta seguinte não muda nada; o primeiro toque permanece, o último toque armazenado persiste. Essa lei de mesclagem vive no SDK compartilhado, testada, não prometida.
 
 ## Componentes
 
-### `clickTrailTracker` — loader first-party
+### `clickTrailTracker`; loader first-party
 
 ```twig
 {% component 'clickTrailTracker' %}
 ```
 
-Renderiza exatamente uma tag de script — o loader ClickTrail servido pelo endpoint que você configurou, marcado com seu Site ID. Nenhum script de terceiros, nunca.
+Renderiza uma tag de script para o loader ClickTrail e o Site ID configurados.
+O host controla a escolha do endpoint; este component não injeta tags
+adicionais.
 
-### `attributionHidden` — campos de atribuição em qualquer formulário
+### `attributionHidden`; campos de atribuição em qualquer formulário
 
 ```twig
 {% component 'attributionHidden' %}
@@ -111,7 +118,7 @@ Todas as opções ficam em Configurações → ClickTrail:
 
 ## Consentimento
 
-O ClickTrail não substitui sua plataforma de consentimento — ele a obedece. O contrato normalizado de consentimento (capacidades, formato do snapshot, matriz de comportamento) está em [`docs/consent-compatibility-plan.md`](../../docs/consent-compatibility-plan.md).
+O ClickTrail não substitui sua plataforma de consentimento; ele a obedece. O contrato normalizado de consentimento (capacidades, formato do snapshot, matriz de comportamento) está em [`docs/consent-compatibility-plan.md`](../../docs/consent-compatibility-plan.md).
 
 - Provedor: implemente `Vizuh\ClickTrail\Classes\Consent\ConsentResolverInterface` (retorna o `ClickTrail\Consent\ConsentSnapshot` atual) e registre em Configurações → Privacidade → Consent resolver class. Adaptadores reais de CMP estão adiados; o plugin WordPress lê a WP Consent API diretamente.
 - Com consentimento desconhecido: **não armazenar nem enviar**. Ações suprimidas são registradas com `suppressionReason()` nos diagnósticos.
@@ -135,4 +142,4 @@ O CI no GitHub Actions faz lint de todos os arquivos PHP a cada push ([workflow]
 
 ## Licença
 
-MIT — Copyright (c) 2026 Vizuh OÜ. Consulte [LICENSE](LICENSE).
+MIT; Copyright (c) 2026 Vizuh OÜ. Consulte [LICENSE](LICENSE).

@@ -4,7 +4,7 @@ English | [Português](README.pt-BR.md) | [Deutsch](README.de.md) | [中文](REA
 
 **vizuh/october-clicktrail**
 
-看清是哪个广告系列、哪个关键词、哪个点击 ID 和哪个落地页带来了 October CMS 的每一次表单提交。
+将观测到的获客上下文附加到已配置的 October CMS 表单提交中。
 
 </div>
 
@@ -28,7 +28,7 @@ English | [Português](README.pt-BR.md) | [Deutsch](README.de.md) | [中文](REA
 
 ## 为什么
 
-不是又一个分析面板。ClickTrail 会把产生每次 October 表单提交的营销触点直接盖在该条提交记录上——确定性的首次/末次触点归因，由共享内核 [`clicktrail/php-sdk`](https://github.com/vizuh/clicktrail-php) 计算，并与其他所有 ClickTrail 集成一起通过同一批黄金样例（golden fixtures）验证。
+ClickTrail 将已存储的首次触点和末次触点上下文附加到已配置的 October 表单提交中，但不判断哪个营销触点导致了提交。共享内核 [`clicktrail/php-sdk`](https://github.com/vizuh/clicktrail-php) 使用经黄金 fixtures 验证的合并规则计算 payload。
 
 需要 October CMS 3（Laravel 10 底座）、PHP 8.1+ 以及 `clicktrail/php-sdk`（^0.1@dev）。
 
@@ -50,7 +50,7 @@ php artisan october:up
 把追踪器加入布局的 `<head>`，把隐藏字段加进任意 October 表单：
 
 ```twig
-{# layouts/default.htm —— <head> 内 #}
+{# layouts/default.htm；<head> 内 #}
 {% component 'clickTrailTracker' %}
 
 {# 任意 October 表单 #}
@@ -71,19 +71,19 @@ ct_initial_referrer=https://www.google.com/
 ct_consent_state=granted
 ```
 
-之后的任何直接访问都不会改变结果——首次触点保持不变，已存储的末次触点持续保留。这条合并法则由共享 SDK 实现，是被测试验证过的，不是口头承诺。
+之后的任何直接访问都不会改变结果；首次触点保持不变，已存储的末次触点持续保留。这条合并法则由共享 SDK 实现，是被测试验证过的，不是口头承诺。
 
 ## 组件
 
-### `clickTrailTracker` —— 第一方加载器
+### `clickTrailTracker`；第一方加载器
 
 ```twig
 {% component 'clickTrailTracker' %}
 ```
 
-只渲染一个 script 标签——从你配置的端点提供的 ClickTrail 加载器，并带上你的 Site ID。绝不注入任何第三方脚本。
+渲染一个包含已配置 ClickTrail 加载器和 Site ID 的 script 标签。端点由宿主选择；此组件不注入其他标签。
 
-### `attributionHidden` —— 任意表单上的归因字段
+### `attributionHidden`；任意表单上的归因字段
 
 ```twig
 {% component 'attributionHidden' %}
@@ -111,7 +111,7 @@ ct_consent_state=granted
 
 ## 同意状态
 
-ClickTrail 不取代你的同意管理平台——它服从该平台。规范化的同意契约（能力、快照结构、行为矩阵）见 [`docs/consent-compatibility-plan.md`](../../docs/consent-compatibility-plan.md)。
+ClickTrail 不取代你的同意管理平台；它服从该平台。规范化的同意契约（能力、快照结构、行为矩阵）见 [`docs/consent-compatibility-plan.md`](../../docs/consent-compatibility-plan.md)。
 
 - 提供方：实现 `Vizuh\ClickTrail\Classes\Consent\ConsentResolverInterface`（返回当前 `ClickTrail\Consent\ConsentSnapshot`），并在 设置 → 隐私 → Consent resolver class 中注册。真正的 CMP 适配器暂缓；WordPress 插件直接读取 WP Consent API。
 - 同意状态未知时：**不存储、不发送**。被抑制的操作会通过 `suppressionReason()` 记录到诊断信息中。
@@ -135,4 +135,4 @@ GitHub Actions CI 在每次推送时对所有 PHP 文件执行 lint（[workflow]
 
 ## 许可协议
 
-MIT — Copyright (c) 2026 Vizuh OÜ。详见 [LICENSE](LICENSE)。
+MIT; Copyright (c) 2026 Vizuh OÜ。详见 [LICENSE](LICENSE)。

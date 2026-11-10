@@ -40,11 +40,22 @@ final class ConsentGate
         return $snapshot;
     }
 
+    /** Decode the persisted snapshot; null when absent or malformed. */
     public static function storedSnapshot(): ?ConsentSnapshot
     {
         $json = session()->get(self::SESSION_SNAPSHOT_KEY);
 
-        return $json === null ? null : ConsentSnapshot::fromJson((string) $json);
+        if (!is_string($json)) {
+            return null;
+        }
+
+        try {
+            $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+            return is_array($data) ? ConsentSnapshot::fromArray($data) : null;
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     /**
@@ -60,7 +71,8 @@ final class ConsentGate
         };
 
         // Toggle off = this use does not require CMP consent (site's own basis).
-        if ($setting !== null && !Settings::get($setting)) {
+        // Never-saved settings default to "required" (fail closed, matches fields.yaml).
+        if ($setting !== null && !Settings::get($setting, true)) {
             return true;
         }
 
